@@ -19,12 +19,24 @@ class TopicsController extends Controller
 
     public function index(Request $request, Topic $topic)
     {
-        $topics = $topic->withOrder($request->order)->paginate(20);
+        $private_topics = $topic->select('id')->where('category_id', '=', 5)->whereIn('user_id', [1, 2])->get()->toArray();
+        $private_ids = array_column($private_topics, 'id');
+
+        $topics = $topic->whereNotIn('id', $private_ids)->withOrder($request->order)->paginate(20);
         return view('topics.index', compact('topics'));
     }
 
-    public function show(Topic $topic)
+    public function show(Request $request, Topic $topic)
     {
+        if ($topic->category_id == 5 && in_array($topic->user_id, [1, 2]) && !in_array(Auth::id(), [1, 2])) {
+            return redirect()->route('topics.index')->with('message', '无权限查看此文章！');
+        }
+
+        // URL 矫正
+        if ( ! empty($topic->slug) && $topic->slug != $request->slug) {
+            return redirect($topic->link(), 301);
+        }
+
         return view('topics.show', compact('topic'));
     }
 
@@ -40,12 +52,17 @@ class TopicsController extends Controller
         $topic->user_id = Auth::id();
         $topic->save();
 
-		return redirect()->route('topics.show', $topic->id)->with('message', '成功创建话题！');
+		return redirect()->to($topic->link())->with('message', '成功创建话题！');
 	}
 
 	public function edit(Topic $topic)
 	{
         $this->authorize('update', $topic);
+
+        if ($topic->user_id == 2 && Auth::id() == 2) {
+            return redirect()->route('topics.index')->with('message', '此文章无法编辑！');
+        }
+
         $categories = Category::all();
 		return view('topics.create_and_edit', compact('topic', 'categories'));
 	}
@@ -53,17 +70,25 @@ class TopicsController extends Controller
 	public function update(TopicRequest $request, Topic $topic)
 	{
 		$this->authorize('update', $topic);
-		$topic->update($request->all());
 
-		return redirect()->route('topics.show', $topic->id)->with('message', '更新成功！');
+        if (Auth::id() != 2) {
+		    $topic->update($request->all());
+            return redirect()->to($topic->link())->with('message', '更新成功！');
+        }
+
+		return redirect()->to($topic->link())->with('message', '更新失败！');
 	}
 
 	public function destroy(Topic $topic)
 	{
 		$this->authorize('destroy', $topic);
-		$topic->delete();
 
-		return redirect()->route('topics.index')->with('message', '删除成功！');
+		if (Auth::id() != 2) {
+            $topic->delete();
+            return redirect()->route('topics.index')->with('message', '删除成功！');
+        }
+
+        return redirect()->route('topics.index')->with('message', '删除失败！');
 	}
 
     public function uploadImage(Request $request, ImageUploadHandler $uploader)
