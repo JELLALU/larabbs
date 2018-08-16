@@ -19,10 +19,14 @@ class TopicsController extends Controller
 
     public function index(Request $request, Topic $topic)
     {
-        $private_topics = $topic->select('id')->where('category_id', '=', 5)->whereIn('user_id', [1, 2])->get()->toArray();
-        $private_ids = array_column($private_topics, 'id');
+        if (!in_array(Auth::id(), [1, 2])) {
+            $private_topics = $topic->select('id')->where('category_id', '=', 5)->whereIn('user_id', [1, 2])->get()->toArray();
+            $private_ids = array_column($private_topics, 'id');
 
-        $topics = $topic->whereNotIn('id', $private_ids)->withOrder($request->order)->paginate(20);
+            $topics = $topic->whereNotIn('id', $private_ids)->withOrder($request->order)->paginate(20);
+        } else {
+            $topics = $topic->withOrder($request->order)->paginate(20);
+        }
         return view('topics.index', compact('topics'));
     }
 
