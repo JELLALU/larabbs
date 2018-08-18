@@ -56,7 +56,7 @@ class TopicsController extends Controller
         $topic->user_id = Auth::id();
         $topic->save();
 
-		return redirect()->to($topic->link())->with('message', '成功创建话题！');
+		return redirect()->to($topic->link())->with('success', '成功创建话题！');
 	}
 
 	public function edit(Topic $topic)
@@ -77,7 +77,7 @@ class TopicsController extends Controller
 
         if (Auth::id() != 2) {
 		    $topic->update($request->all());
-            return redirect()->to($topic->link())->with('message', '更新成功！');
+            return redirect()->to($topic->link())->with('success', '更新成功！');
         }
 
 		return redirect()->to($topic->link())->with('message', '更新失败！');
@@ -89,7 +89,7 @@ class TopicsController extends Controller
 
 		if (Auth::id() != 2) {
             $topic->delete();
-            return redirect()->route('topics.index')->with('message', '删除成功！');
+            return redirect()->route('topics.index')->with('success', '删除成功！');
         }
 
         return redirect()->route('topics.index')->with('message', '删除失败！');

@@ -27,13 +27,12 @@ class RepliesController extends Controller
 
 	public function destroy(Reply $reply)
 	{
+        $this->authorize('destroy', $reply);
 	    if (Auth::id() != 2) {
-            $this->authorize('destroy', $reply);
             $reply->delete();
-
-            return redirect()->route('replies.index')->with('message', '删除成功！');
+            return redirect()->to($reply->topic->link())->with('success', '成功删除回复！');
         } else {
-            return redirect()->route('replies.index')->with('message', '删除失败！');
+            return redirect()->to($reply->topic->link())->with('message', '删除失败！');
         }
 	}
 }
