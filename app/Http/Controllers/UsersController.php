@@ -52,6 +52,11 @@ class UsersController extends Controller
             if ($result) {
                 $data['avatar'] = $result['path'];
             }
+
+            //删除原头像
+            $avatar = $user->avatar;
+            $avatar = public_path() . str_replace(config('app.url'), '', $avatar);
+            @unlink($avatar);
         }
 
         //更新users表

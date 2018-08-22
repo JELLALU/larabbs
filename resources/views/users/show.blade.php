@@ -27,13 +27,14 @@
             </div>
         </div>
         <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-
-            {{-- 用户发布的内容 --}}
             <div class="panel panel-default">
                 <div class="panel-body">
-                    这个人很懒，什么都没有没有留下>_<
+                <span>
+                    <h1 class="panel-title pull-left" style="font-size:30px;">{{ $user->name }} <small>{{ $user->email }}</small></h1>
+                </span>
                 </div>
             </div>
+            <hr>
 
             {{-- 用户发布的内容 --}}
             <div class="panel panel-default">
