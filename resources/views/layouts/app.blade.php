@@ -14,6 +14,9 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="bookmark" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}">
     @yield('styles')
 </head>
 

@@ -90,7 +90,9 @@ class User extends Authenticatable
         //删除原头像
         $avatar = $this->avatar;
         $avatar = public_path() . str_replace(config('app.url'), '', $avatar);
-        @unlink($avatar);
+        if ($this->avatar !== $path) {
+            @unlink($avatar);
+        }
 
         $this->attributes['avatar'] = $path;
     }

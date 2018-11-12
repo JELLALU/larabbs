@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Handlers\ImageUploadHandler;
 use App\Models\Category;
+use App\Models\Link;
 use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class TopicsController extends Controller
         $this->middleware('auth', ['except' => ['index', 'show']]);
     }
 
-    public function index(Request $request, Topic $topic, User $user)
+    public function index(Request $request, Topic $topic, User $user, Link $link)
     {
         if (!in_array(Auth::id(), [1, 2])) {
             $private_topics = $topic->select('id')->where('category_id', '=', 5)->whereIn('user_id', [1, 2])->get()->toArray();
@@ -29,8 +30,9 @@ class TopicsController extends Controller
             $topics = $topic->withOrder($request->order)->paginate(20);
         }
         $active_users = $user->getActiveUsers();
+        $links = $link->getAllCached();
 
-        return view('topics.index', compact('topics', 'active_users'));
+        return view('topics.index', compact('topics', 'active_users', 'links'));
     }
 
     public function show(Request $request, Topic $topic)
