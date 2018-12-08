@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TopicRequest;
 use Auth;
+use Illuminate\Support\Facades\Session;
 
 class TopicsController extends Controller
 {

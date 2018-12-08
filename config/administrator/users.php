@@ -78,7 +78,7 @@ return [
             'type' => 'image',
 
             // 图片上传必须设置图片存放路径
-            'location' => is_dir(public_path() . '/uploads/images/avatars/' . date("Ym/d/", time())) ? public_path() . '/uploads/images/avatars/' . date("Ym/d/", time()) : mkdir(public_path() . '/uploads/images/avatars/' . date("Ym/d/", time()), 0777),
+            'location' => is_dir(public_path() . '/uploads/images/avatars/' . date("Ym/d/", time())) ? public_path() . '/uploads/images/avatars/' . date("Ym/d/", time()) : mkdir(public_path() . '/uploads/images/avatars/' . date("Ym/d/", time()), 0777, true),
         ],
         'roles' => [
             'title'      => '用户角色',
